@@ -79,11 +79,13 @@ def collate_fn(batch: List[Dict[str, any]],tokenizer=BertTokenizerFast.from_pret
         word_idx = 0
         for i in range(len(val)):
             v = val[i]
+            #词表的掩码符号为♥，在vocab中为♥或者##♥，id分别为491和9177
             if v == 491 or v == 9177:
                 tokens['labels'][j][i] = tokenizer.convert_tokens_to_ids(term[idx])
                 idx = idx + 1
                 con.append(True)
             else:
+            #token的掩码符号id为482或13620
                 if v == 482 or v ==13620:
                     if word_idx >= len(word):
                         #print(tokens['labels'][j])
@@ -103,7 +105,8 @@ def collate_fn(batch: List[Dict[str, any]],tokenizer=BertTokenizerFast.from_pret
     masked_indices = Mask
     tokens['masked_index'] = mask_index
     # masked_indices = torch.bernoulli(probability_matrix).bool()#伯努利采样
-    tokens['labels'][~masked_indices] = -100  # We only compute loss on masked tokens
+    tokens['labels'][~masked_indices] = -100  # We only compute loss on masked tokens，-100代表不需要计算当前token的loss
+    #原来为0.8掩码，剩下的0.2维持原样或者换一个token，但是在这我选择全部掩码，也就是直接按照masked_indices进行掩码即可，所以设置为1.0，这里的操作是为了将掩码符号统一替换为[MASK]
     indices_replaced = torch.bernoulli(torch.full(tokens['labels'].shape, 1.0)).bool() & masked_indices
     # 80% of the time, we replace masked input tokens with tokenizer.mask_token ([MASK])
     # indices_replaced = torch.bernoulli(torch.full(labels.shape, 0.8)).bool() & masked_indices
