@@ -5,7 +5,6 @@ from transformers import AutoTokenizer
 from transformers import get_scheduler
 from tqdm.auto import tqdm
 import numpy as np
-#tokenizer=AutoTokenizer.from_pretrained(r'D:\Pycharm\基于类的掩码预训练\model\macBERT')
 import wandb
 import argparse
 
@@ -40,6 +39,7 @@ wandb.init(
 #num_epochs = 3
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
 model=Random_Whole_model()
+
 sentence_path=r'/home/sirui/WMM/Medicine/baike_data/WWM/Masked_corpus.txt'
 terms_path=r'/home/sirui/WMM/Medicine/baike_data/WWM/masked_terms.txt'
 length_path=r'/home/sirui/WMM/Medicine/baike_data/WWM/terms_length.txt'
@@ -48,6 +48,7 @@ dataset=Knowledge_Dataset(sentence_path=sentence_path,term_path=terms_path,lengt
 dataloader=DataLoader(dataset,batch_size=batch_size,shuffle=True,collate_fn=collate_fn)
 pretrained_params = []
 new_params = []
+#这里实现有初始化参数的神经网络选择pretrained_lr的学习率，而没有初始化参数的神经网络层选择new_lr的学习率，这里设置为一样
 for name, param in model.named_parameters():
     if 'bert' in name or 'mlm' in name:
         pretrained_params.append(param)
