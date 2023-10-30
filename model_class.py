@@ -1,6 +1,4 @@
-#BERT,维度扩展，没有知识的直接concat0向量，最后生成3*768的向量，进线性层+Layernorm，该层作为最终的state
 from typing import Optional, Tuple
-
 from torch.nn import CrossEntropyLoss
 from torch.utils.data import DataLoader
 from transformers import BertModel, AutoTokenizer, BertForMaskedLM
@@ -13,11 +11,13 @@ import torch
 from transformers.models.bert.modeling_bert import BertLMPredictionHead
 from transformers.utils import ModelOutput
 import torch.nn.functional as F
+
 def read_json(json_path):
     with open(json_path,'r',encoding='utf-8') as f:
         str=f.read()
         data=json.loads(str)
         return data
+        
 class MyOutput(ModelOutput):
     """
     Base class for masked language models outputs.
@@ -45,7 +45,7 @@ class MyOutput(ModelOutput):
     hidden_states: Optional[Tuple[torch.FloatTensor]] = None
     attentions: Optional[Tuple[torch.FloatTensor]] = None
     terminate_states: Optional[Tuple[torch.FloatTensor]] = None
-
+#初始化模型的参数文件存放地址
 check_point=r'/home/sirui/WMM/Car/model/Encoder/BERT-wwm-ext'
 tokenizer=AutoTokenizer.from_pretrained(check_point)
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
