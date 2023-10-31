@@ -13,6 +13,7 @@ train_file=r"/home/sirui/WMM/Finance/Data/Init_Corpus.txt"
 #with open(mask_file,'r',encoding='utf-8') as f:
 #    mask_word=f.readlines()
 
+#因为没有准备测试数据，所以用的同一个，当然可以将test去掉，只用train也是可以的
 Masked_dataset =DatasetDict.from_text({'train':train_file,'test':train_file})
 #Original_dataset = DatasetDict.from_text({'train':file,'test':file})
 
